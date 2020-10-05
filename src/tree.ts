@@ -64,6 +64,9 @@ export function calcSizes(flipedNodes: NodesListType): AreaMapType {
 export function buildTree(
   nodes: NodesListType,
   nodeSizes: AreaMapType
+  /*hooks: {
+    centuring: () => PositionMapType
+  }*/
 ): PositionMapType {
   const rootNode = nodes[0];
 
@@ -101,9 +104,7 @@ export function buildTree(
         };
       });
 
-      const childrenIds = childrens.map((children) => children.id);
-
-      console.log("childrens--", childrenIds);
+      // const center = findCenterPosition(childrenIds, nodesPosition, nodeSizes);
 
       // onst positions = Object.keys(nodesPosition).filter(keys )
 

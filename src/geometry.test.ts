@@ -49,4 +49,34 @@ describe("Find center node", () => {
       y: 150
     });
   });
+
+  it("Find center with offset", () => {
+    const nodesSizes: AreaMapType = {
+      "001": {
+        width: 100,
+        height: 100
+      },
+      "002": {
+        width: 100,
+        height: 120
+      }
+    };
+
+    const nodesPositions: PositionMapType = {
+      "001": {
+        x: 10,
+        y: 50
+      },
+      "002": {
+        x: 10,
+        y: 150
+      }
+    };
+
+    const ids = ["001", "002"];
+    expect(findCenterPosition(ids, nodesPositions, nodesSizes)).toMatchObject({
+      x: 0,
+      y: 100
+    });
+  });
 });
