@@ -3,7 +3,7 @@ import {
   AreaMapType,
   NodesListType,
   NodeType,
-  PositionMapType
+  PositionMapType, NodeIdType
 } from "./types";
 
 import { findCenterPosition } from "./geometry";
@@ -61,12 +61,33 @@ export function calcSizes(flipedNodes: NodesListType): AreaMapType {
   return nodesChildrenSizes;
 }
 
+const centering = (childrenIds: Array<NodeIdType>, parentNode: NodeType, nodeSizes: AreaMapType, nodesPosition: PositionMapType) => {
+  if (childrenIds.length > 0) {
+    const center = nodeSizes[parentNode.id].height / 2 - parentNode.height / 2 //findCenterPosition(childrenIds, nodesPosition, nodeSizes);
+
+    console.log(parentNode, center, nodesPosition, nodeSizes);
+
+    childrenIds.forEach(childrenId => {
+      const children = nodesPosition[childrenId];
+      nodesPosition[childrenId] = { ...children, y: children.y - center }
+    });
+  }
+  return nodesPosition;
+}
+
+
+
+type HooksCenteringType =  (childrenIds: Array<NodeIdType>, parentNode: NodeType, nodeSizes: AreaMapType, nodesPosition: PositionMapType) => PositionMapType
+interface TreeHooksType {
+  childrenCentering: HooksCenteringType
+}
+
 export function buildTree(
   nodes: NodesListType,
-  nodeSizes: AreaMapType
-  /*hooks: {
-    centuring: () => PositionMapType
-  }*/
+  nodeSizes: AreaMapType,
+  hooks: TreeHooksType = {
+    childrenCentering: (childrenId, parentNode, nodeSizes, nodesPosition) => nodesPosition
+  }
 ): PositionMapType {
   const rootNode = nodes[0];
 
@@ -104,7 +125,14 @@ export function buildTree(
         };
       });
 
-      // const center = findCenterPosition(childrenIds, nodesPosition, nodeSizes);
+
+
+      const childrenIds = childrens.map(node => node.id);
+
+      if (childrenIds.length > 0) {
+        nodesPosition = hooks.childrenCentering(childrenIds, parentNode, nodeSizes, nodesPosition);
+      }
+
 
       // onst positions = Object.keys(nodesPosition).filter(keys )
 

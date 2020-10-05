@@ -44,13 +44,13 @@ const data = [
 const data = [
   {
     id: "01",
-    width: 40,
+    width: 100,
     height: 50,
     path: []
   },
   {
     id: "02",
-    width: 20,
+    width: 200,
     height: 30,
     pid: "01",
     path: ["01"]
@@ -58,7 +58,7 @@ const data = [
 
   {
     id: "03",
-    width: 20,
+    width: 200,
     height: 50,
     pid: "01",
     path: ["01"]
@@ -66,14 +66,14 @@ const data = [
 
   {
     id: "08",
-    width: 50,
+    width: 250,
     height: 50,
     pid: "02",
     path: ["01", "02"]
   },
   {
     id: "09",
-    width: 50,
+    width: 350,
     height: 50,
     pid: "02",
     path: ["01", "02"]
@@ -88,7 +88,17 @@ const nodesSorted = sortNodes(data);
 
 // console.log('size-', nodeSizes);
 
-const nodesPositions = buildTree(nodesSorted, nodeSizes);
+const hooks = {
+  childrenCentering: (childrenIds, parentNode, nodeSizes, nodesPosition) => {
+    const center = nodeSizes[parentNode.id].height / 2 - parentNode.height / 2 //findCenterPosition(childrenIds, nodesPosition, nodeSizes);
+    console.log(parentNode, center, nodesPosition, nodeSizes);
+    childrenIds.forEach(childrenId => {
+      nodesPosition[childrenId].y = nodesPosition[childrenId].y - center;
+    });
+    return nodesPosition;
+  }
+}
+const nodesPositions = buildTree(nodesSorted, nodeSizes, hooks);
 
 console.log({ nodeSizes, nodesPositions });
 
@@ -107,9 +117,9 @@ const svg = d3
   .select("body")
   .append("svg")
   .attr("width", window.innerWidth)
-  .attr("height", window.innerHeight / 2)
+  .attr("height", window.innerHeight)
   .append("g")
-  .attr("transform", "translate(0, 100)");
+  .attr("transform", "translate(0, 200)");
 
 const nodes = svg.selectAll("rect").data(data);
 
@@ -132,7 +142,8 @@ titles
   .attr("id", (d) => `text-id-${d.id}`)
   .attr("x", (d) => nodesPositions[d.id].x)
   .attr("y", (d) => nodesPositions[d.id].y + 15)
-  .text((d) => d.id);
+  .style("font-size", '8px')
+  .text((d) => `${d.id} ${nodesPositions[d.id].x} ${nodesPositions[d.id].y}`);
 
 const info = d3.select("body").append("div");
 
