@@ -77,6 +77,13 @@ const data = [
     height: 50,
     pid: "02",
     path: ["01", "02"]
+  },
+  {
+    id: "10",
+    width: 350,
+    height: 30,
+    pid: "02",
+    path: ["01", "02"]
   }
 ];
 
@@ -90,14 +97,14 @@ const nodesSorted = sortNodes(data);
 
 const hooks = {
   childrenCentering: (childrenIds, parentNode, nodeSizes, nodesPosition) => {
-    const center = nodeSizes[parentNode.id].height / 2 - parentNode.height / 2 //findCenterPosition(childrenIds, nodesPosition, nodeSizes);
+    const center = nodeSizes[parentNode.id].height / 2 - parentNode.height / 2; //findCenterPosition(childrenIds, nodesPosition, nodeSizes);
     console.log(parentNode, center, nodesPosition, nodeSizes);
-    childrenIds.forEach(childrenId => {
+    childrenIds.forEach((childrenId) => {
       nodesPosition[childrenId].y = nodesPosition[childrenId].y - center;
     });
     return nodesPosition;
   }
-}
+};
 const nodesPositions = buildTree(nodesSorted, nodeSizes, hooks);
 
 console.log({ nodeSizes, nodesPositions });
@@ -142,7 +149,7 @@ titles
   .attr("id", (d) => `text-id-${d.id}`)
   .attr("x", (d) => nodesPositions[d.id].x)
   .attr("y", (d) => nodesPositions[d.id].y + 15)
-  .style("font-size", '8px')
+  .style("font-size", "8px")
   .text((d) => `${d.id} ${nodesPositions[d.id].x} ${nodesPositions[d.id].y}`);
 
 const info = d3.select("body").append("div");
